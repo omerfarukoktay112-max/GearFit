@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:loc="clr-namespace:GearFit.Localization"
+             xmlns:ctl="clr-namespace:GearFit.Controls"
+             xmlns:vm="clr-namespace:GearFit.ViewModels"
+             xmlns:shapes="clr-namespace:Microsoft.Maui.Controls.Shapes;assembly=Microsoft.Maui.Controls"
+             x:Class="GearFit.Pages.DetailPage"
+             x:DataType="vm:DetailViewModel"
+             Title="Antrenman detayı"
+             SafeAreaEdges="Container">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto,Auto" Padding="4,8,8,0" HeightRequest="72">
+            <Border Style="{StaticResource IconButton}" SemanticProperties.Description="{loc:T back}">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding BackCommand}" />
+                </Border.GestureRecognizers>
+                <ctl:Icon Name="back" Size="24" Thickness="2" IconColor="{DynamicResource Text}" HorizontalOptions="Center" VerticalOptions="Center" />
+            </Border>
+            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                <Label Text="{Binding Title}" FontFamily="BarlowCond" FontSize="30" />
+                <Label Text="{Binding DateText}" Style="{StaticResource MutedLabel}" />
+            </VerticalStackLayout>
+            <Border Grid.Column="2" Style="{StaticResource IconButton}" SemanticProperties.Description="{loc:T rename}">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding RenameCommand}" />
+                </Border.GestureRecognizers>
+                <ctl:Icon Name="edit" Size="22" IconColor="{DynamicResource Muted}" HorizontalOptions="Center" VerticalOptions="Center" />
+            </Border>
+            <Border Grid.Column="3" Style="{StaticResource IconButton}" SemanticProperties.Description="{loc:T delete}">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding DeleteCommand}" />
+                </Border.GestureRecognizers>
+                <ctl:Icon Name="trash" Size="22" IconColor="{DynamicResource Muted}" HorizontalOptions="Center" VerticalOptions="Center" />
+            </Border>
+        </Grid>
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="16,0,16,16" Spacing="10">
+
+                <Border Style="{StaticResource Card}" HeightRequest="72">
+                    <Border.StrokeShape>
+                        <shapes:RoundRectangle CornerRadius="14" />
+                    </Border.StrokeShape>
+                    <Grid ColumnDefinitions="*,*,*" VerticalOptions="Center">
+                        <VerticalStackLayout>
+                            <Label Text="{loc:T duration}" Style="{StaticResource Caps}" FontSize="12" HorizontalTextAlignment="Center" />
+                            <Label Text="{Binding DurationText}" FontFamily="BarlowCond" FontSize="26" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1">
+                            <Label Text="{loc:T volume}" Style="{StaticResource Caps}" FontSize="12" HorizontalTextAlignment="Center" />
+                            <Label Text="{Binding VolumeText}" FontFamily="BarlowCond" FontSize="26" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="2">
+                            <Label Text="{loc:T set}" Style="{StaticResource Caps}" FontSize="12" HorizontalTextAlignment="Center" />
+                            <Label Text="{Binding SetCountText}" FontFamily="BarlowCond" FontSize="26" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                        <BoxView Grid.Column="1" WidthRequest="1" HorizontalOptions="Start" Color="{DynamicResource Line}" />
+                        <BoxView Grid.Column="2" WidthRequest="1" HorizontalOptions="Start" Color="{DynamicResource Line}" />
+                    </Grid>
+                </Border>
+
+                <VerticalStackLayout Spacing="10" BindableLayout.ItemsSource="{Binding Blocks}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="vm:ExerciseBlock">
+                            <Border Style="{StaticResource Card}" Padding="14,0,14,12">
+                                <Border.StrokeShape>
+                                    <shapes:RoundRectangle CornerRadius="14" />
+                                </Border.StrokeShape>
+                                <VerticalStackLayout>
+                                    <Label Text="{Binding Name}" FontFamily="BarlowSemi" FontSize="17" HeightRequest="44" VerticalOptions="Center" VerticalTextAlignment="Center" />
+                                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding Sets}">
+                                        <BindableLayout.ItemTemplate>
+                                            <DataTemplate x:DataType="vm:SetRow">
+                                                <Grid ColumnDefinitions="20,*,Auto" ColumnSpacing="14" HeightRequest="34">
+                                                    <Label Text="{Binding Number}" FontFamily="BarlowSemi" TextColor="{DynamicResource Muted}"
+                                                           HorizontalTextAlignment="Center" VerticalOptions="Center" />
+                                                    <Label Grid.Column="1" Text="{Binding Text}" VerticalOptions="Center" />
+                                                    <Border Grid.Column="2" IsVisible="{Binding IsPr}" HeightRequest="24" Padding="8,0" StrokeThickness="0"
+                                                            BackgroundColor="{DynamicResource AccentDim}" VerticalOptions="Center">
+                                                        <Border.StrokeShape>
+                                                            <shapes:RoundRectangle CornerRadius="12" />
+                                                        </Border.StrokeShape>
+                                                        <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
+                                                            <ctl:Icon Name="trophy" Size="12" Thickness="2.4" IconColor="{DynamicResource Accent}" VerticalOptions="Center" />
+                                                            <Label Text="PR" FontFamily="BarlowSemi" FontSize="12" TextColor="{DynamicResource Accent}" VerticalOptions="Center" />
+                                                        </HorizontalStackLayout>
+                                                    </Border>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </BindableLayout.ItemTemplate>
+                                    </VerticalStackLayout>
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <Button Grid.Row="2" Text="{loc:T repeat_workout}" Command="{Binding RepeatCommand}" HeightRequest="54" Margin="16,12,16,20" />
+    </Grid>
+</ContentPage>

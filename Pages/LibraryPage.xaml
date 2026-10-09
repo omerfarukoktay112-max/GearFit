@@ -1,0 +1,189 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:loc="clr-namespace:GearFit.Localization"
+             xmlns:ctl="clr-namespace:GearFit.Controls"
+             xmlns:vm="clr-namespace:GearFit.ViewModels"
+             xmlns:shapes="clr-namespace:Microsoft.Maui.Controls.Shapes;assembly=Microsoft.Maui.Controls"
+             x:Class="GearFit.Pages.LibraryPage"
+             x:DataType="vm:LibraryViewModel"
+             Title="Egzersiz ekle"
+             SafeAreaEdges="Container">
+
+    <Grid>
+        <Grid RowDefinitions="Auto,Auto,Auto,*,Auto">
+
+            <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" Padding="4,8,12,0" HeightRequest="64">
+                <Border Style="{StaticResource IconButton}" SemanticProperties.Description="{loc:T close}">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding CloseCommand}" />
+                    </Border.GestureRecognizers>
+                    <ctl:Icon Name="close" Size="24" Thickness="2" IconColor="{DynamicResource Text}" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Border>
+                <Label Grid.Column="1" Text="{loc:T add_exercise}" FontFamily="BarlowSemi" FontSize="19"
+                       HorizontalTextAlignment="Center" VerticalOptions="Center" />
+                <Button Grid.Column="2" Text="{Binding AddButtonText}" Command="{Binding ConfirmCommand}" IsEnabled="{Binding CanAdd}"
+                        HeightRequest="44" FontSize="16" CornerRadius="12" VerticalOptions="Center" />
+            </Grid>
+
+            <Border Grid.Row="1" Style="{StaticResource Card}" Margin="16,4,16,0" HeightRequest="48" Padding="14,0">
+                <Border.StrokeShape>
+                    <shapes:RoundRectangle CornerRadius="12" />
+                </Border.StrokeShape>
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                    <ctl:Icon Name="search" Size="20" Thickness="2" IconColor="{DynamicResource Muted}" VerticalOptions="Center" />
+                    <Entry Grid.Column="1" Text="{Binding SearchText}" Placeholder="{loc:T search_exercise}" VerticalOptions="Center"
+                           SemanticProperties.Description="{loc:T search_exercise}" ReturnType="Search" />
+                </Grid>
+            </Border>
+
+            <ScrollView Grid.Row="2" Orientation="Horizontal" HorizontalScrollBarVisibility="Never" Margin="0,10,0,0">
+                <HorizontalStackLayout Padding="16,0" Spacing="8" BindableLayout.ItemsSource="{Binding Chips}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="vm:GroupChip">
+                            <Border Style="{StaticResource Chip}" BackgroundColor="{DynamicResource Surface}">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnChipTapped" />
+                                </Border.GestureRecognizers>
+                                <Border.Triggers>
+                                    <DataTrigger TargetType="Border" Binding="{Binding Selected}" Value="True">
+                                        <Setter Property="BackgroundColor" Value="{DynamicResource Accent}" />
+                                    </DataTrigger>
+                                </Border.Triggers>
+                                <Label Text="{Binding Display}" FontSize="15" VerticalOptions="Center">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding Selected}" Value="True">
+                                            <Setter Property="TextColor" Value="{DynamicResource OnAccent}" />
+                                            <Setter Property="FontFamily" Value="BarlowSemi" />
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </HorizontalStackLayout>
+            </ScrollView>
+
+            <CollectionView Grid.Row="3" ItemsSource="{Binding Items}" Margin="0,8,0,0" SelectionMode="None">
+                <CollectionView.EmptyView>
+                    <Label Text="{loc:T no_match}" Style="{StaticResource MutedLabel}"
+                           Margin="16,24" HorizontalTextAlignment="Center" LineBreakMode="WordWrap" />
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:LibraryItem">
+                        <Grid HeightRequest="64" Padding="16,0" ColumnDefinitions="*,28" BackgroundColor="Transparent">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnItemTapped" />
+                            </Grid.GestureRecognizers>
+                            <Grid.Triggers>
+                                <DataTrigger TargetType="Grid" Binding="{Binding IsSelected}" Value="True">
+                                    <Setter Property="BackgroundColor" Value="{DynamicResource AccentRow}" />
+                                </DataTrigger>
+                            </Grid.Triggers>
+                            <VerticalStackLayout VerticalOptions="Center">
+                                <Label Text="{Binding Name}" FontFamily="BarlowSemi" FontSize="17" />
+                                <Label Text="{Binding Group}" Style="{StaticResource MutedLabel}" />
+                            </VerticalStackLayout>
+                            <Border Grid.Column="1" WidthRequest="28" HeightRequest="28" VerticalOptions="Center"
+                                    Stroke="{DynamicResource Dashed}" StrokeThickness="2" BackgroundColor="Transparent">
+                                <Border.StrokeShape>
+                                    <shapes:RoundRectangle CornerRadius="14" />
+                                </Border.StrokeShape>
+                                <Border.Triggers>
+                                    <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
+                                        <Setter Property="BackgroundColor" Value="{DynamicResource Accent}" />
+                                        <Setter Property="Stroke" Value="{DynamicResource Accent}" />
+                                    </DataTrigger>
+                                </Border.Triggers>
+                                <ctl:Icon Name="check" Size="18" Thickness="2.8" IconColor="{DynamicResource OnAccent}"
+                                          IsVisible="{Binding IsSelected}" HorizontalOptions="Center" VerticalOptions="Center" />
+                            </Border>
+                            <BoxView Grid.ColumnSpan="2" HeightRequest="1" VerticalOptions="End" Color="{DynamicResource Line}" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Grid Grid.Row="4" Padding="16,0,16,0" HeightRequest="72" BackgroundColor="{DynamicResource Bg}">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding OpenSheetCommand}" />
+                </Grid.GestureRecognizers>
+                <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
+                    <Border WidthRequest="40" HeightRequest="40" StrokeThickness="0" BackgroundColor="{DynamicResource Surface2}">
+                        <Border.StrokeShape>
+                            <shapes:RoundRectangle CornerRadius="20" />
+                        </Border.StrokeShape>
+                        <ctl:Icon Name="plus" Size="20" Thickness="2.2" IconColor="{DynamicResource Accent}" HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Border>
+                    <VerticalStackLayout VerticalOptions="Center">
+                        <Label Text="{loc:T custom_exercise_add}" TextColor="{DynamicResource Accent}" FontFamily="BarlowSemi" FontSize="17" />
+                        <Label Text="{loc:T custom_exercise_sub}" Style="{StaticResource MutedLabel}" />
+                    </VerticalStackLayout>
+                </HorizontalStackLayout>
+            </Grid>
+        </Grid>
+
+        <!-- Özel egzersiz alt sayfası -->
+        <Grid IsVisible="{Binding IsSheetOpen}">
+            <BoxView x:Name="Scrim" Color="{DynamicResource Scrim}">
+                <BoxView.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding CloseSheetCommand}" />
+                </BoxView.GestureRecognizers>
+            </BoxView>
+            <Border x:Name="Sheet" VerticalOptions="End" Padding="16,10,16,24" StrokeThickness="0" BackgroundColor="{DynamicResource Surface}">
+                <Border.StrokeShape>
+                    <shapes:RoundRectangle CornerRadius="24,24,0,0" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="0">
+                    <BoxView WidthRequest="40" HeightRequest="4" CornerRadius="2" Color="{DynamicResource Dashed}" HorizontalOptions="Center" />
+                    <Grid ColumnDefinitions="*,44" Margin="0,10,0,0">
+                        <Label Text="{loc:T custom_exercise}" FontFamily="BarlowCond" FontSize="30" VerticalOptions="Center" />
+                        <Border Grid.Column="1" Style="{StaticResource IconButton}" Margin="0,0,-10,0" SemanticProperties.Description="{loc:T close}">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding CloseSheetCommand}" />
+                            </Border.GestureRecognizers>
+                            <ctl:Icon Name="close" Size="22" Thickness="2" IconColor="{DynamicResource Muted}" HorizontalOptions="Center" VerticalOptions="Center" />
+                        </Border>
+                    </Grid>
+
+                    <Label Text="{loc:T name}" Style="{StaticResource Caps}" Margin="0,10,0,8" />
+                    <Border HeightRequest="52" Padding="14,0" BackgroundColor="{DynamicResource Surface2}" Stroke="{DynamicResource Accent}" StrokeThickness="1.5">
+                        <Border.StrokeShape>
+                            <shapes:RoundRectangle CornerRadius="12" />
+                        </Border.StrokeShape>
+                        <Entry Text="{Binding NewName}" Placeholder="{loc:T ex_placeholder}" FontSize="17" VerticalOptions="Center"
+                               SemanticProperties.Description="{loc:T exercise_name}" />
+                    </Border>
+
+                    <Label Text="{loc:T muscle_group}" Style="{StaticResource Caps}" Margin="0,18,0,8" />
+                    <FlexLayout Wrap="Wrap" JustifyContent="Start" AlignItems="Start" AlignContent="Start" BindableLayout.ItemsSource="{Binding NewChips}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="vm:GroupChip">
+                                <Border Style="{StaticResource Chip}" BackgroundColor="{DynamicResource Surface2}" Margin="0,0,8,8">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnNewChipTapped" />
+                                    </Border.GestureRecognizers>
+                                    <Border.Triggers>
+                                        <DataTrigger TargetType="Border" Binding="{Binding Selected}" Value="True">
+                                            <Setter Property="BackgroundColor" Value="{DynamicResource Accent}" />
+                                        </DataTrigger>
+                                    </Border.Triggers>
+                                    <Label Text="{Binding Display}" FontSize="15" VerticalOptions="Center">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding Selected}" Value="True">
+                                                <Setter Property="TextColor" Value="{DynamicResource OnAccent}" />
+                                                <Setter Property="FontFamily" Value="BarlowSemi" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </FlexLayout>
+
+                    <Button Text="{loc:T save_and_add}" Command="{Binding SaveNewCommand}" IsEnabled="{Binding CanSaveNew}" HeightRequest="54" Margin="0,14,0,0" />
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+    </Grid>
+</ContentPage>

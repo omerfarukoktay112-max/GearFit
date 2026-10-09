@@ -1,0 +1,252 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:loc="clr-namespace:GearFit.Localization"
+             xmlns:ctl="clr-namespace:GearFit.Controls"
+             xmlns:vm="clr-namespace:GearFit.ViewModels"
+             xmlns:shapes="clr-namespace:Microsoft.Maui.Controls.Shapes;assembly=Microsoft.Maui.Controls"
+             x:Class="GearFit.Pages.OnboardingPage"
+             x:DataType="vm:OnboardingViewModel"
+             SafeAreaEdges="Container">
+
+    <ContentPage.Resources>
+        <!-- Seçilebilir satır: Dil ve cinsiyet adımlarında ortak -->
+        <DataTemplate x:Key="OptionTemplate" x:DataType="vm:OptionItem">
+            <Border HeightRequest="64" Padding="18,0" StrokeThickness="1.5" Stroke="{DynamicResource Line}"
+                    BackgroundColor="{DynamicResource Surface}">
+                <Border.StrokeShape>
+                    <shapes:RoundRectangle CornerRadius="16" />
+                </Border.StrokeShape>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnOptionTapped" />
+                </Border.GestureRecognizers>
+                <Border.Triggers>
+                    <DataTrigger TargetType="Border" Binding="{Binding Selected}" Value="True">
+                        <Setter Property="Stroke" Value="{DynamicResource Accent}" />
+                        <Setter Property="BackgroundColor" Value="{DynamicResource AccentRow}" />
+                    </DataTrigger>
+                </Border.Triggers>
+                <Grid ColumnDefinitions="*,28">
+                    <Label Text="{Binding Label}" FontFamily="BarlowSemi" FontSize="19" VerticalOptions="Center" />
+                    <Border Grid.Column="1" WidthRequest="28" HeightRequest="28" VerticalOptions="Center"
+                            Stroke="{DynamicResource Dashed}" StrokeThickness="2" BackgroundColor="Transparent">
+                        <Border.StrokeShape>
+                            <shapes:RoundRectangle CornerRadius="14" />
+                        </Border.StrokeShape>
+                        <Border.Triggers>
+                            <DataTrigger TargetType="Border" Binding="{Binding Selected}" Value="True">
+                                <Setter Property="BackgroundColor" Value="{DynamicResource Accent}" />
+                                <Setter Property="Stroke" Value="{DynamicResource Accent}" />
+                            </DataTrigger>
+                        </Border.Triggers>
+                        <ctl:Icon Name="check" Size="18" Thickness="2.8" IconColor="{DynamicResource OnAccent}"
+                                  IsVisible="{Binding Selected}" HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Border>
+                </Grid>
+            </Border>
+        </DataTemplate>
+    </ContentPage.Resources>
+
+    <Grid x:Name="Root" RowDefinitions="Auto,*,Auto" Padding="20,8,20,20">
+
+        <!-- Üst çubuk: geri + ilerleme noktaları -->
+        <Grid Grid.Row="0" ColumnDefinitions="44,*,44" HeightRequest="52">
+            <Border Style="{StaticResource IconButton}" IsVisible="{Binding CanGoBack}" SemanticProperties.Description="{loc:T back}">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding BackCommand}" />
+                </Border.GestureRecognizers>
+                <ctl:Icon Name="back" Size="24" Thickness="2" IconColor="{DynamicResource Text}" HorizontalOptions="Center" VerticalOptions="Center" />
+            </Border>
+            <HorizontalStackLayout Grid.Column="1" Spacing="8" HorizontalOptions="Center" VerticalOptions="Center">
+                <BoxView x:Name="Dot0" WidthRequest="28" HeightRequest="6" CornerRadius="3" Color="{DynamicResource Accent}" />
+                <BoxView x:Name="Dot1" WidthRequest="10" HeightRequest="6" CornerRadius="3" Color="{DynamicResource Surface3}" />
+                <BoxView x:Name="Dot2" WidthRequest="10" HeightRequest="6" CornerRadius="3" Color="{DynamicResource Surface3}" />
+                <BoxView x:Name="Dot3" WidthRequest="10" HeightRequest="6" CornerRadius="3" Color="{DynamicResource Surface3}" />
+            </HorizontalStackLayout>
+        </Grid>
+
+        <Grid Grid.Row="1">
+
+            <!-- Adım 1: karşılama + dil -->
+            <ScrollView x:Name="Panel0" IsVisible="{Binding IsStep0}">
+                <VerticalStackLayout Spacing="0" Padding="0,12,0,0">
+                    <Border x:Name="Logo" WidthRequest="92" HeightRequest="92" StrokeThickness="0" BackgroundColor="{DynamicResource Accent}" HorizontalOptions="Start">
+                        <Border.StrokeShape>
+                            <shapes:RoundRectangle CornerRadius="28" />
+                        </Border.StrokeShape>
+                        <ctl:Icon Name="dumbbell" Size="48" Thickness="2" IconColor="{DynamicResource OnAccent}" HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Border>
+                    <Label Text="{loc:T ob_welcome}" FontFamily="BarlowCond" FontSize="52" Margin="0,24,0,0" />
+                    <Label Text="{loc:T ob_welcome_sub}" Style="{StaticResource MutedLabel}" FontSize="17" LineBreakMode="WordWrap" Margin="0,4,0,0" />
+                    <Label Text="{loc:T language}" Style="{StaticResource Caps}" Margin="0,32,0,10" />
+                    <VerticalStackLayout Spacing="10" BindableLayout.ItemsSource="{Binding Languages}"
+                                         BindableLayout.ItemTemplate="{StaticResource OptionTemplate}" />
+                </VerticalStackLayout>
+            </ScrollView>
+
+            <!-- Adım 2: cinsiyet -->
+            <ScrollView x:Name="Panel1" IsVisible="{Binding IsStep1}">
+                <VerticalStackLayout Spacing="0" Padding="0,12,0,0">
+                    <Label Text="{loc:T ob_gender_title}" FontFamily="BarlowCond" FontSize="46" />
+                    <Label Text="{loc:T ob_gender_sub}" Style="{StaticResource MutedLabel}" FontSize="17" LineBreakMode="WordWrap" Margin="0,4,0,24" />
+                    <VerticalStackLayout Spacing="10" BindableLayout.ItemsSource="{Binding Genders}"
+                                         BindableLayout.ItemTemplate="{StaticResource OptionTemplate}" />
+                </VerticalStackLayout>
+            </ScrollView>
+
+            <!-- Adım 4: tema (yarısı açık, yarısı koyu) -->
+            <Grid x:Name="Panel3" IsVisible="{Binding IsStep3}" RowDefinitions="Auto,*" Padding="0,12,0,0">
+                <VerticalStackLayout>
+                    <Label Text="{loc:T ob_theme_title}" FontFamily="BarlowCond" FontSize="46" />
+                    <Label Text="{loc:T ob_theme_sub}" Style="{StaticResource MutedLabel}" FontSize="17" LineBreakMode="WordWrap" Margin="0,4,0,18" />
+                </VerticalStackLayout>
+
+                <Grid Grid.Row="1" RowDefinitions="*,*" RowSpacing="12">
+
+                    <!-- Açık yarı (sabit renkler: seçili temadan bağımsız) -->
+                    <Border x:Name="LightHalf" Grid.Row="0" BackgroundColor="#F6F2EC" Stroke="#E4DED5" StrokeThickness="2" Padding="18,14"
+                            SemanticProperties.Description="{loc:T a11y_theme_light}">
+                        <Border.StrokeShape>
+                            <shapes:RoundRectangle CornerRadius="24" />
+                        </Border.StrokeShape>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding PickThemeCommand}" CommandParameter="0" />
+                        </Border.GestureRecognizers>
+                        <Border.Triggers>
+                            <DataTrigger TargetType="Border" Binding="{Binding LightSelected}" Value="True">
+                                <Setter Property="Stroke" Value="#D4521A" />
+                            </DataTrigger>
+                            <DataTrigger TargetType="Border" Binding="{Binding DarkSelected}" Value="True">
+                                <Setter Property="Opacity" Value="0.5" />
+                            </DataTrigger>
+                        </Border.Triggers>
+                        <Grid RowDefinitions="Auto,*,Auto" ColumnDefinitions="*,Auto">
+                            <Label Text="GearFit" FontFamily="BarlowCond" FontSize="26" TextColor="#1B1815" />
+                            <Border Grid.Row="1" Grid.ColumnSpan="2" Margin="0,10,0,10" Padding="14,0" StrokeThickness="0" BackgroundColor="#FFFFFF" VerticalOptions="Center" HeightRequest="64">
+                                <Border.StrokeShape>
+                                    <shapes:RoundRectangle CornerRadius="14" />
+                                </Border.StrokeShape>
+                                <Grid ColumnDefinitions="*,36">
+                                    <VerticalStackLayout VerticalOptions="Center">
+                                        <Label Text="Push" FontFamily="BarlowCond" FontSize="22" TextColor="#1B1815" />
+                                        <Label Text="Bench Press · Omuz Press" FontSize="12" TextColor="#6B635A" />
+                                    </VerticalStackLayout>
+                                    <Border Grid.Column="1" WidthRequest="36" HeightRequest="36" StrokeThickness="0" BackgroundColor="#D4521A" VerticalOptions="Center">
+                                        <Border.StrokeShape>
+                                            <shapes:RoundRectangle CornerRadius="18" />
+                                        </Border.StrokeShape>
+                                        <ctl:Icon Name="play" Size="16" IconColor="#FFFFFF" HorizontalOptions="Center" VerticalOptions="Center" />
+                                    </Border>
+                                </Grid>
+                            </Border>
+                            <Label Grid.Row="2" Text="{loc:T theme_light}" FontFamily="BarlowSemi" FontSize="19" TextColor="#1B1815" VerticalOptions="Center" />
+                            <Border Grid.Row="2" Grid.Column="1" WidthRequest="28" HeightRequest="28" StrokeThickness="2" Stroke="#CFC7BC" BackgroundColor="Transparent">
+                                <Border.StrokeShape>
+                                    <shapes:RoundRectangle CornerRadius="14" />
+                                </Border.StrokeShape>
+                                <Border.Triggers>
+                                    <DataTrigger TargetType="Border" Binding="{Binding LightSelected}" Value="True">
+                                        <Setter Property="BackgroundColor" Value="#D4521A" />
+                                        <Setter Property="Stroke" Value="#D4521A" />
+                                    </DataTrigger>
+                                </Border.Triggers>
+                                <ctl:Icon Name="check" Size="18" Thickness="2.8" IconColor="#FFFFFF" IsVisible="{Binding LightSelected}" HorizontalOptions="Center" VerticalOptions="Center" />
+                            </Border>
+                        </Grid>
+                    </Border>
+
+                    <!-- Koyu yarı -->
+                    <Border x:Name="DarkHalf" Grid.Row="1" BackgroundColor="#121110" Stroke="#2B2723" StrokeThickness="2" Padding="18,14"
+                            SemanticProperties.Description="{loc:T a11y_theme_dark}">
+                        <Border.StrokeShape>
+                            <shapes:RoundRectangle CornerRadius="24" />
+                        </Border.StrokeShape>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding PickThemeCommand}" CommandParameter="1" />
+                        </Border.GestureRecognizers>
+                        <Border.Triggers>
+                            <DataTrigger TargetType="Border" Binding="{Binding DarkSelected}" Value="True">
+                                <Setter Property="Stroke" Value="#FF7A3D" />
+                            </DataTrigger>
+                            <DataTrigger TargetType="Border" Binding="{Binding LightSelected}" Value="True">
+                                <Setter Property="Opacity" Value="0.5" />
+                            </DataTrigger>
+                        </Border.Triggers>
+                        <Grid RowDefinitions="Auto,*,Auto" ColumnDefinitions="*,Auto">
+                            <Label Text="GearFit" FontFamily="BarlowCond" FontSize="26" TextColor="#F3EFEA" />
+                            <Border Grid.Row="1" Grid.ColumnSpan="2" Margin="0,10,0,10" Padding="14,0" StrokeThickness="0" BackgroundColor="#1C1A18" VerticalOptions="Center" HeightRequest="64">
+                                <Border.StrokeShape>
+                                    <shapes:RoundRectangle CornerRadius="14" />
+                                </Border.StrokeShape>
+                                <Grid ColumnDefinitions="*,36">
+                                    <VerticalStackLayout VerticalOptions="Center">
+                                        <Label Text="Push" FontFamily="BarlowCond" FontSize="22" TextColor="#F3EFEA" />
+                                        <Label Text="Bench Press · Omuz Press" FontSize="12" TextColor="#A39B92" />
+                                    </VerticalStackLayout>
+                                    <Border Grid.Column="1" WidthRequest="36" HeightRequest="36" StrokeThickness="0" BackgroundColor="#262320" VerticalOptions="Center">
+                                        <Border.StrokeShape>
+                                            <shapes:RoundRectangle CornerRadius="18" />
+                                        </Border.StrokeShape>
+                                        <ctl:Icon Name="play" Size="16" IconColor="#FF7A3D" HorizontalOptions="Center" VerticalOptions="Center" />
+                                    </Border>
+                                </Grid>
+                            </Border>
+                            <Label Grid.Row="2" Text="{loc:T theme_dark}" FontFamily="BarlowSemi" FontSize="19" TextColor="#F3EFEA" VerticalOptions="Center" />
+                            <Border Grid.Row="2" Grid.Column="1" WidthRequest="28" HeightRequest="28" StrokeThickness="2" Stroke="#4A443D" BackgroundColor="Transparent">
+                                <Border.StrokeShape>
+                                    <shapes:RoundRectangle CornerRadius="14" />
+                                </Border.StrokeShape>
+                                <Border.Triggers>
+                                    <DataTrigger TargetType="Border" Binding="{Binding DarkSelected}" Value="True">
+                                        <Setter Property="BackgroundColor" Value="#FF7A3D" />
+                                        <Setter Property="Stroke" Value="#FF7A3D" />
+                                    </DataTrigger>
+                                </Border.Triggers>
+                                <ctl:Icon Name="check" Size="18" Thickness="2.8" IconColor="#14120F" IsVisible="{Binding DarkSelected}" HorizontalOptions="Center" VerticalOptions="Center" />
+                            </Border>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Grid>
+
+            <!-- Adım 3: boy ve kilo -->
+            <ScrollView x:Name="Panel2" IsVisible="{Binding IsStep2}">
+                <VerticalStackLayout Spacing="0" Padding="0,12,0,0">
+                    <Label Text="{loc:T ob_body_title}" FontFamily="BarlowCond" FontSize="46" />
+                    <Label Text="{loc:T ob_body_sub}" Style="{StaticResource MutedLabel}" FontSize="17" LineBreakMode="WordWrap" Margin="0,4,0,24" />
+
+                    <Label Text="{loc:T unit}" Style="{StaticResource Caps}" Margin="0,0,0,8" />
+                    <ctl:SegmentedControl Items="kg,lb" SelectedIndex="{Binding UnitIndex, Mode=TwoWay}" />
+
+                    <Label Text="{loc:T height}" Style="{StaticResource Caps}" Margin="0,20,0,8" />
+                    <Border HeightRequest="64" Padding="18,0" StrokeThickness="0" BackgroundColor="{DynamicResource Surface}">
+                        <Border.StrokeShape>
+                            <shapes:RoundRectangle CornerRadius="16" />
+                        </Border.StrokeShape>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Entry Text="{Binding HeightText}" Keyboard="Numeric" FontFamily="BarlowCond" FontSize="34" VerticalOptions="Center"
+                                   SemanticProperties.Description="{loc:T height}" />
+                            <Label Grid.Column="1" Text="{loc:T cm}" TextColor="{DynamicResource Muted}" FontSize="18" VerticalOptions="Center" />
+                        </Grid>
+                    </Border>
+
+                    <Label Text="{loc:T a11y_weight}" Style="{StaticResource Caps}" Margin="0,20,0,8" />
+                    <Border HeightRequest="64" Padding="18,0" StrokeThickness="0" BackgroundColor="{DynamicResource Surface}">
+                        <Border.StrokeShape>
+                            <shapes:RoundRectangle CornerRadius="16" />
+                        </Border.StrokeShape>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Entry Text="{Binding WeightText}" Keyboard="Numeric" Placeholder="75" FontFamily="BarlowCond" FontSize="34" VerticalOptions="Center"
+                                   SemanticProperties.Description="{loc:T a11y_weight}" />
+                            <Label Grid.Column="1" Text="{Binding UnitLabel}" TextColor="{DynamicResource Muted}" FontSize="18" VerticalOptions="Center" />
+                        </Grid>
+                    </Border>
+
+                    <Label Text="{loc:T ob_private}" Style="{StaticResource MutedLabel}" FontSize="14" LineBreakMode="WordWrap" Margin="0,18,0,0" />
+                </VerticalStackLayout>
+            </ScrollView>
+        </Grid>
+
+        <Button x:Name="NextButton" Grid.Row="2" Text="{Binding NextText}" Command="{Binding NextCommand}" IsEnabled="{Binding CanNext}" IsVisible="{Binding ShowNext}" HeightRequest="58" />
+    </Grid>
+</ContentPage>

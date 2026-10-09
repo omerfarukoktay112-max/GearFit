@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:loc="clr-namespace:GearFit.Localization"
+             xmlns:ctl="clr-namespace:GearFit.Controls"
+             xmlns:vm="clr-namespace:GearFit.ViewModels"
+             xmlns:models="clr-namespace:GearFit.Models"
+             xmlns:shapes="clr-namespace:Microsoft.Maui.Controls.Shapes;assembly=Microsoft.Maui.Controls"
+             x:Class="GearFit.Pages.MainPage"
+             x:DataType="vm:MainViewModel"
+             Title="Antrenman"
+             SafeAreaEdges="Container">
+
+    <Grid RowDefinitions="*,Auto">
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout Padding="16,8,16,16" Spacing="0">
+
+                <Grid ColumnDefinitions="*,Auto" HeightRequest="56">
+                    <Label Text="{loc:T tab_workout}" Style="{StaticResource PageTitle}" />
+                    <Border Grid.Column="1" Style="{StaticResource IconButton}" SemanticProperties.Description="{loc:T settings}">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding OpenSettingsCommand}" />
+                        </Border.GestureRecognizers>
+                        <ctl:Icon Name="gear" Size="24" Thickness="1.8" IconColor="{DynamicResource Muted}" HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Border>
+                </Grid>
+
+                <!-- Haftalık hedef -->
+                <Border Style="{StaticResource Card}" Margin="0,8,0,0" Padding="16,14">
+                    <HorizontalStackLayout Spacing="14">
+                        <Grid WidthRequest="56" HeightRequest="56">
+                            <ctl:RingView Progress="{Binding GoalProgress}" SemanticProperties.Description="{Binding GoalCaption}" />
+                            <Label Text="{Binding GoalText}" FontFamily="BarlowCond" FontSize="20"
+                                   HorizontalOptions="Center" VerticalOptions="Center" />
+                        </Grid>
+                        <VerticalStackLayout Spacing="3" VerticalOptions="Center">
+                            <Label Text="{Binding GoalCaption}" FontFamily="BarlowSemi" FontSize="18" />
+                            <HorizontalStackLayout Spacing="6" IsVisible="{Binding HasStreak}">
+                                <ctl:Icon Name="flame" Size="16" Thickness="2" IconColor="{DynamicResource Accent}" VerticalOptions="Center" />
+                                <Label Text="{Binding StreakText}" TextColor="{DynamicResource Accent}" FontFamily="BarlowSemi" FontSize="14" VerticalOptions="Center" />
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+                    </HorizontalStackLayout>
+                </Border>
+
+                <Button Text="{Binding StartButtonText}" Command="{Binding StartEmptyCommand}" Margin="0,12,0,0" />
+
+                <Label Text="{loc:T my_routines}" Style="{StaticResource Caps}" Margin="0,24,0,10" />
+
+                <VerticalStackLayout Spacing="10" BindableLayout.ItemsSource="{Binding Routines}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="models:RoutineSummary">
+                            <Border Style="{StaticResource Card}" MinimumHeightRequest="76" Padding="16,14,12,14"
+                                    SemanticProperties.Description="{Binding Name}"
+                                    SemanticProperties.Hint="{loc:T routine_hint}">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnRoutineTapped" />
+                                </Border.GestureRecognizers>
+                                <Border.Behaviors>
+                                    <ctl:LongPressBehavior LongPressed="OnRoutineLongPressed" />
+                                </Border.Behaviors>
+                                <Grid ColumnDefinitions="*,44" ColumnSpacing="12">
+                                    <VerticalStackLayout Spacing="2" VerticalOptions="Center">
+                                        <Label Text="{Binding Name}" FontFamily="BarlowCond" FontSize="26" />
+                                        <Label Text="{Binding Summary}" Style="{StaticResource MutedLabel}" LineBreakMode="TailTruncation" MaxLines="1" />
+                                    </VerticalStackLayout>
+                                    <Border Grid.Column="1" WidthRequest="44" HeightRequest="44" StrokeThickness="0"
+                                            BackgroundColor="{DynamicResource Surface2}" VerticalOptions="Center">
+                                        <Border.StrokeShape>
+                                            <shapes:RoundRectangle CornerRadius="22" />
+                                        </Border.StrokeShape>
+                                        <ctl:Icon Name="play" Size="20" IconColor="{DynamicResource Accent}" HorizontalOptions="Center" VerticalOptions="Center" />
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+
+                <Border Margin="0,10,0,0" HeightRequest="56" Stroke="{DynamicResource Dashed}" StrokeThickness="1.5"
+                        StrokeDashArray="4,3" BackgroundColor="Transparent" SemanticProperties.Description="{loc:T new_routine}">
+                    <Border.StrokeShape>
+                        <shapes:RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding NewRoutineCommand}" />
+                    </Border.GestureRecognizers>
+                    <HorizontalStackLayout Spacing="8" HorizontalOptions="Center" VerticalOptions="Center">
+                        <ctl:Icon Name="plus" Size="20" Thickness="2.2" IconColor="{DynamicResource Accent}" VerticalOptions="Center" />
+                        <Label Text="{loc:T new_routine}" TextColor="{DynamicResource Accent}" FontFamily="BarlowSemi" VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <ctl:BottomTabs Grid.Row="1" Active="0" />
+    </Grid>
+</ContentPage>

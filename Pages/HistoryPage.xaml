@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:loc="clr-namespace:GearFit.Localization"
+             xmlns:ctl="clr-namespace:GearFit.Controls"
+             xmlns:vm="clr-namespace:GearFit.ViewModels"
+             xmlns:shapes="clr-namespace:Microsoft.Maui.Controls.Shapes;assembly=Microsoft.Maui.Controls"
+             x:Class="GearFit.Pages.HistoryPage"
+             x:DataType="vm:HistoryViewModel"
+             Title="Geçmiş"
+             SafeAreaEdges="Container">
+
+    <ContentPage.Resources>
+        <DataTemplate x:Key="WorkoutRowTemplate" x:DataType="vm:WorkoutRow">
+            <Border Style="{StaticResource Card}" HeightRequest="72" Padding="16,0,12,0" Margin="16,0,16,8">
+                <Border.StrokeShape>
+                    <shapes:RoundRectangle CornerRadius="14" />
+                </Border.StrokeShape>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnRowTapped" />
+                </Border.GestureRecognizers>
+                <Grid ColumnDefinitions="36,*,20" ColumnSpacing="14">
+                    <VerticalStackLayout VerticalOptions="Center">
+                        <Label Text="{Binding Dow}" Style="{StaticResource Caps}" FontSize="12" HorizontalTextAlignment="Center" />
+                        <Label Text="{Binding Day}" FontFamily="BarlowCond" FontSize="28" HorizontalTextAlignment="Center" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                        <Label Text="{Binding Name}" FontFamily="BarlowSemi" FontSize="18" />
+                        <Label Text="{Binding Subtitle}" Style="{StaticResource MutedLabel}" />
+                    </VerticalStackLayout>
+                    <ctl:Icon Grid.Column="2" Name="chevron" Size="20" Thickness="2" IconColor="{DynamicResource Muted}" VerticalOptions="Center" />
+                </Grid>
+            </Border>
+        </DataTemplate>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto">
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Padding="16,8,16,0" HeightRequest="64">
+            <Label Text="{loc:T tab_history}" Style="{StaticResource PageTitle}" />
+            <Border Grid.Column="1" Style="{StaticResource IconButton}" SemanticProperties.Description="{loc:T settings}">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding OpenSettingsCommand}" />
+                </Border.GestureRecognizers>
+                <ctl:Icon Name="gear" Size="24" Thickness="1.8" IconColor="{DynamicResource Muted}" HorizontalOptions="Center" VerticalOptions="Center" />
+            </Border>
+        </Grid>
+
+        <ctl:SegmentedControl Grid.Row="1" Items="{loc:T seg_list_calendar}" SelectedIndex="{Binding ModeIndex, Mode=TwoWay}" Margin="16,8,16,0" />
+
+        <!-- Liste -->
+        <CollectionView Grid.Row="2" IsVisible="{Binding IsList}" ItemsSource="{Binding Groups}" IsGrouped="True"
+                        ItemTemplate="{StaticResource WorkoutRowTemplate}" SelectionMode="None" Margin="0,8,0,0">
+            <CollectionView.GroupHeaderTemplate>
+                <DataTemplate x:DataType="vm:MonthGroup">
+                    <Label Text="{Binding Title}" Style="{StaticResource Caps}" Margin="16,14,16,8" />
+                </DataTemplate>
+            </CollectionView.GroupHeaderTemplate>
+            <CollectionView.EmptyView>
+                <VerticalStackLayout Padding="32,60" Spacing="8">
+                    <Label Text="{loc:T history_empty_title}" FontFamily="BarlowCond" FontSize="26" HorizontalTextAlignment="Center" />
+                    <Label Text="{loc:T history_empty_msg}" Style="{StaticResource MutedLabel}"
+                           HorizontalTextAlignment="Center" LineBreakMode="WordWrap" />
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+        </CollectionView>
+
+        <!-- Takvim -->
+        <ScrollView Grid.Row="2" IsVisible="{Binding IsCalendar}" Margin="0,8,0,0">
+            <VerticalStackLayout Spacing="0" Padding="0,0,0,16">
+                <Grid ColumnDefinitions="44,*,44" Padding="12,0">
+                    <Border Style="{StaticResource IconButton}" SemanticProperties.Description="{loc:T prev_month}">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding PreviousMonthCommand}" />
+                        </Border.GestureRecognizers>
+                        <ctl:Icon Name="back" Size="22" Thickness="2" IconColor="{DynamicResource Text}" HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Border>
+                    <Label Grid.Column="1" Text="{Binding MonthTitle}" FontFamily="BarlowSemi" FontSize="18"
+                           HorizontalTextAlignment="Center" VerticalOptions="Center" />
+                    <Border Grid.Column="2" Style="{StaticResource IconButton}" SemanticProperties.Description="{loc:T next_month}">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding NextMonthCommand}" />
+                        </Border.GestureRecognizers>
+                        <ctl:Icon Name="chevron" Size="22" Thickness="2" IconColor="{DynamicResource Text}" HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Border>
+                </Grid>
+
+                <Grid ColumnDefinitions="*,*,*,*,*,*,*" Padding="16,4,16,0">
+                    <Label Text="{loc:T wd1}" Style="{StaticResource Caps}" FontSize="12" HorizontalTextAlignment="Center" />
+                    <Label Grid.Column="1" Text="{loc:T wd2}" Style="{StaticResource Caps}" FontSize="12" HorizontalTextAlignment="Center" />
+                    <Label Grid.Column="2" Text="{loc:T wd3}" Style="{StaticResource Caps}" FontSize="12" HorizontalTextAlignment="Center" />
+                    <Label Grid.Column="3" Text="{loc:T wd4}" Style="{StaticResource Caps}" FontSize="12" HorizontalTextAlignment="Center" />
+                    <Label Grid.Column="4" Text="{loc:T wd5}" Style="{StaticResource Caps}" FontSize="12" HorizontalTextAlignment="Center" />
+                    <Label Grid.Column="5" Text="{loc:T wd6}" Style="{StaticResource Caps}" FontSize="12" HorizontalTextAlignment="Center" />
+                    <Label Grid.Column="6" Text="{loc:T wd7}" Style="{StaticResource Caps}" FontSize="12" HorizontalTextAlignment="Center" />
+                </Grid>
+
+                <CollectionView ItemsSource="{Binding Cells}" HeightRequest="300" Margin="16,4,16,0" SelectionMode="None" IsEnabled="True">
+                    <CollectionView.ItemsLayout>
+                        <GridItemsLayout Orientation="Vertical" Span="7" />
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="vm:CalendarCell">
+                            <Grid HeightRequest="48">
+                                <Border WidthRequest="40" HeightRequest="40" StrokeThickness="0" BackgroundColor="Transparent"
+                                        HorizontalOptions="Center" VerticalOptions="Center" IsVisible="{Binding IsReal}">
+                                    <Border.StrokeShape>
+                                        <shapes:RoundRectangle CornerRadius="20" />
+                                    </Border.StrokeShape>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnCellTapped" />
+                                    </Border.GestureRecognizers>
+                                    <Border.Triggers>
+                                        <DataTrigger TargetType="Border" Binding="{Binding HasWorkout}" Value="True">
+                                            <Setter Property="BackgroundColor" Value="{DynamicResource Accent}" />
+                                        </DataTrigger>
+                                    </Border.Triggers>
+                                    <Label Text="{Binding Day}" FontSize="16" HorizontalOptions="Center" VerticalOptions="Center">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding HasWorkout}" Value="True">
+                                                <Setter Property="TextColor" Value="{DynamicResource OnAccent}" />
+                                                <Setter Property="FontFamily" Value="BarlowSemi" />
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Label" Binding="{Binding IsToday}" Value="True">
+                                                <Setter Property="FontFamily" Value="BarlowSemi" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                </Border>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <Label Text="{loc:T this_month}" Style="{StaticResource Caps}" Margin="16,12,16,8" />
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding MonthRows}"
+                                     BindableLayout.ItemTemplate="{StaticResource WorkoutRowTemplate}" />
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <ctl:BottomTabs Grid.Row="3" Active="1" />
+    </Grid>
+</ContentPage>

@@ -1,0 +1,176 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:loc="clr-namespace:GearFit.Localization"
+             xmlns:ctl="clr-namespace:GearFit.Controls"
+             xmlns:vm="clr-namespace:GearFit.ViewModels"
+             xmlns:shapes="clr-namespace:Microsoft.Maui.Controls.Shapes;assembly=Microsoft.Maui.Controls"
+             x:Class="GearFit.Pages.SettingsPage"
+             x:DataType="vm:SettingsViewModel"
+             Title="Ayarlar"
+             SafeAreaEdges="Container">
+
+    <Grid RowDefinitions="Auto,*">
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*" Padding="4,8,16,0" ColumnSpacing="4" HeightRequest="64">
+            <Border Style="{StaticResource IconButton}" SemanticProperties.Description="{loc:T back}">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding BackCommand}" />
+                </Border.GestureRecognizers>
+                <ctl:Icon Name="back" Size="24" Thickness="2" IconColor="{DynamicResource Text}" HorizontalOptions="Center" VerticalOptions="Center" />
+            </Border>
+            <Label Grid.Column="1" Text="{loc:T settings}" Style="{StaticResource PageTitle}" />
+        </Grid>
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="16,8,16,24" Spacing="14">
+
+                <Border Style="{StaticResource Card}" Padding="16,0">
+                    <VerticalStackLayout>
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" HeightRequest="72">
+                            <Label Text="{loc:T language}" FontSize="17" VerticalOptions="Center" />
+                            <ctl:SegmentedControl Grid.Column="1" Items="Türkçe,English,Deutsch" SelectedIndex="{Binding LanguageIndex, Mode=TwoWay}"
+                                                  HorizontalOptions="End" WidthRequest="250" VerticalOptions="Center" />
+                        </Grid>
+                        <BoxView HeightRequest="1" Color="{DynamicResource Line}" />
+
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" HeightRequest="72">
+                            <Label Text="{loc:T gender}" FontSize="17" VerticalOptions="Center" />
+                            <ctl:SegmentedControl Grid.Column="1" Items="{loc:T seg_gender}" SelectedIndex="{Binding GenderIndex, Mode=TwoWay}"
+                                                  HorizontalOptions="End" WidthRequest="250" VerticalOptions="Center" />
+                        </Grid>
+                        <BoxView HeightRequest="1" Color="{DynamicResource Line}" />
+
+                        <Grid ColumnDefinitions="*,Auto" HeightRequest="72">
+                            <Label Text="{loc:T height}" FontSize="17" VerticalOptions="Center" />
+                            <HorizontalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                <Border Style="{StaticResource IconButton}" BackgroundColor="{DynamicResource Surface2}" SemanticProperties.Description="{loc:T decrease}">
+                                    <Border.StrokeShape>
+                                        <shapes:RoundRectangle CornerRadius="12" />
+                                    </Border.StrokeShape>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding HeightDownCommand}" />
+                                    </Border.GestureRecognizers>
+                                    <ctl:Icon Name="minus" Size="18" Thickness="2.4" IconColor="{DynamicResource Text}" HorizontalOptions="Center" VerticalOptions="Center" />
+                                </Border>
+                                <Label Text="{Binding HeightCm, StringFormat='{0} cm'}" FontFamily="BarlowCond" FontSize="26" WidthRequest="86"
+                                       HorizontalTextAlignment="Center" VerticalOptions="Center" />
+                                <Border Style="{StaticResource IconButton}" BackgroundColor="{DynamicResource Surface2}" SemanticProperties.Description="{loc:T increase}">
+                                    <Border.StrokeShape>
+                                        <shapes:RoundRectangle CornerRadius="12" />
+                                    </Border.StrokeShape>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding HeightUpCommand}" />
+                                    </Border.GestureRecognizers>
+                                    <ctl:Icon Name="plus" Size="18" Thickness="2.4" IconColor="{DynamicResource Text}" HorizontalOptions="Center" VerticalOptions="Center" />
+                                </Border>
+                            </HorizontalStackLayout>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Style="{StaticResource Card}" Padding="16,0">
+                    <VerticalStackLayout>
+                        <Grid ColumnDefinitions="*,Auto" HeightRequest="72">
+                            <Label Text="{loc:T unit}" FontSize="17" VerticalOptions="Center" />
+                            <ctl:SegmentedControl Grid.Column="1" Items="kg,lb" SelectedIndex="{Binding UnitIndex, Mode=TwoWay}"
+                                                  WidthRequest="150" VerticalOptions="Center" />
+                        </Grid>
+                        <BoxView HeightRequest="1" Color="{DynamicResource Line}" />
+
+                        <Grid ColumnDefinitions="*,Auto" HeightRequest="72">
+                            <Label Text="{loc:T theme}" FontSize="17" VerticalOptions="Center" />
+                            <ctl:SegmentedControl Grid.Column="1" Items="{loc:T seg_theme}" SelectedIndex="{Binding ThemeIndex, Mode=TwoWay}"
+                                                  WidthRequest="210" VerticalOptions="Center" />
+                        </Grid>
+                        <BoxView HeightRequest="1" Color="{DynamicResource Line}" />
+
+                        <Grid ColumnDefinitions="*,Auto" HeightRequest="72">
+                            <VerticalStackLayout VerticalOptions="Center">
+                                <Label Text="{loc:T weekly_goal}" FontSize="17" />
+                                <Label Text="{loc:T goal_sub}" Style="{StaticResource MutedLabel}" FontSize="13" />
+                            </VerticalStackLayout>
+                            <HorizontalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                <Border Style="{StaticResource IconButton}" BackgroundColor="{DynamicResource Surface2}" SemanticProperties.Description="{loc:T decrease}">
+                                    <Border.StrokeShape>
+                                        <shapes:RoundRectangle CornerRadius="12" />
+                                    </Border.StrokeShape>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding GoalDownCommand}" />
+                                    </Border.GestureRecognizers>
+                                    <ctl:Icon Name="minus" Size="18" Thickness="2.4" IconColor="{DynamicResource Text}" HorizontalOptions="Center" VerticalOptions="Center" />
+                                </Border>
+                                <Label Text="{Binding WeeklyGoal}" FontFamily="BarlowCond" FontSize="26" WidthRequest="48"
+                                       HorizontalTextAlignment="Center" VerticalOptions="Center" />
+                                <Border Style="{StaticResource IconButton}" BackgroundColor="{DynamicResource Surface2}" SemanticProperties.Description="{loc:T increase}">
+                                    <Border.StrokeShape>
+                                        <shapes:RoundRectangle CornerRadius="12" />
+                                    </Border.StrokeShape>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding GoalUpCommand}" />
+                                    </Border.GestureRecognizers>
+                                    <ctl:Icon Name="plus" Size="18" Thickness="2.4" IconColor="{DynamicResource Text}" HorizontalOptions="Center" VerticalOptions="Center" />
+                                </Border>
+                            </HorizontalStackLayout>
+                        </Grid>
+                        <BoxView HeightRequest="1" Color="{DynamicResource Line}" />
+
+                        <Grid ColumnDefinitions="*,Auto" HeightRequest="72">
+                            <VerticalStackLayout VerticalOptions="Center">
+                                <Label Text="{loc:T rest_time}" FontSize="17" />
+                                <Label Text="{loc:T default_sub}" Style="{StaticResource MutedLabel}" FontSize="13" />
+                            </VerticalStackLayout>
+                            <HorizontalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                <Border Style="{StaticResource IconButton}" BackgroundColor="{DynamicResource Surface2}" SemanticProperties.Description="{loc:T a11y_minus15}">
+                                    <Border.StrokeShape>
+                                        <shapes:RoundRectangle CornerRadius="12" />
+                                    </Border.StrokeShape>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding RestDownCommand}" />
+                                    </Border.GestureRecognizers>
+                                    <ctl:Icon Name="minus" Size="18" Thickness="2.4" IconColor="{DynamicResource Text}" HorizontalOptions="Center" VerticalOptions="Center" />
+                                </Border>
+                                <Label Text="{Binding RestText}" FontFamily="BarlowCond" FontSize="26" WidthRequest="64"
+                                       HorizontalTextAlignment="Center" VerticalOptions="Center" />
+                                <Border Style="{StaticResource IconButton}" BackgroundColor="{DynamicResource Surface2}" SemanticProperties.Description="{loc:T a11y_plus15}">
+                                    <Border.StrokeShape>
+                                        <shapes:RoundRectangle CornerRadius="12" />
+                                    </Border.StrokeShape>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding RestUpCommand}" />
+                                    </Border.GestureRecognizers>
+                                    <ctl:Icon Name="plus" Size="18" Thickness="2.4" IconColor="{DynamicResource Text}" HorizontalOptions="Center" VerticalOptions="Center" />
+                                </Border>
+                            </HorizontalStackLayout>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Style="{StaticResource Card}" HeightRequest="64" Padding="16,0" SemanticProperties.Description="{loc:T show_welcome}">
+                    <Border.StrokeShape>
+                        <shapes:RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ShowWelcomeCommand}" />
+                    </Border.GestureRecognizers>
+                    <Label Text="{loc:T show_welcome}" FontSize="17" VerticalOptions="Center" />
+                </Border>
+
+                <Border Style="{StaticResource Card}" HeightRequest="64" Padding="16,0" SemanticProperties.Description="{loc:T export_data}">
+                    <Border.StrokeShape>
+                        <shapes:RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ExportCommand}" />
+                    </Border.GestureRecognizers>
+                    <Grid ColumnDefinitions="*,22">
+                        <VerticalStackLayout VerticalOptions="Center">
+                            <Label Text="{loc:T export_data}" FontSize="17" />
+                            <Label Text="{loc:T csv_file}" Style="{StaticResource MutedLabel}" FontSize="13" />
+                        </VerticalStackLayout>
+                        <ctl:Icon Grid.Column="1" Name="download" Size="22" Thickness="2" IconColor="{DynamicResource Accent}" VerticalOptions="Center" />
+                    </Grid>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

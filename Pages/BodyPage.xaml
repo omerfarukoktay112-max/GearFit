@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:loc="clr-namespace:GearFit.Localization"
+             xmlns:ctl="clr-namespace:GearFit.Controls"
+             xmlns:vm="clr-namespace:GearFit.ViewModels"
+             xmlns:shapes="clr-namespace:Microsoft.Maui.Controls.Shapes;assembly=Microsoft.Maui.Controls"
+             x:Class="GearFit.Pages.BodyPage"
+             x:DataType="vm:BodyViewModel"
+             Title="Vücut"
+             SafeAreaEdges="Container">
+
+    <Grid RowDefinitions="*,Auto">
+        <ScrollView>
+            <VerticalStackLayout Padding="16,8,16,16" Spacing="0">
+
+                <Grid ColumnDefinitions="*,Auto" HeightRequest="56">
+                    <Label Text="{loc:T tab_progress}" Style="{StaticResource PageTitle}" />
+                    <Border Grid.Column="1" Style="{StaticResource IconButton}" SemanticProperties.Description="{loc:T settings}">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding OpenSettingsCommand}" />
+                        </Border.GestureRecognizers>
+                        <ctl:Icon Name="gear" Size="24" Thickness="1.8" IconColor="{DynamicResource Muted}" HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Border>
+                </Grid>
+
+                <ctl:SegmentedControl Items="{loc:T seg_exercise_body}" SelectedIndex="1" Margin="0,8,0,0" Selected="OnViewSelected" />
+
+                <Border Style="{StaticResource Card}" Margin="0,10,0,0" Padding="14">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="{loc:T today_weight}" Style="{StaticResource Caps}" FontSize="12" />
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                            <Border HeightRequest="52" Padding="14,0" StrokeThickness="0" BackgroundColor="{DynamicResource Surface2}">
+                                <Border.StrokeShape>
+                                    <shapes:RoundRectangle CornerRadius="12" />
+                                </Border.StrokeShape>
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                    <Entry Text="{Binding InputText}" Keyboard="Numeric" FontFamily="BarlowCond" FontSize="30"
+                                           VerticalOptions="Center" SemanticProperties.Description="{loc:T today_weight}" />
+                                    <Label Grid.Column="1" Text="{Binding Unit}" TextColor="{DynamicResource Muted}" VerticalOptions="Center" />
+                                </Grid>
+                            </Border>
+                            <Button Grid.Column="1" Text="{loc:T save}" Command="{Binding SaveCommand}" HeightRequest="52" FontSize="16" CornerRadius="12" />
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Style="{StaticResource Card}" Margin="0,14,0,0" Padding="20,28" IsVisible="{Binding NoData}">
+                    <Label Text="{loc:T body_empty}" Style="{StaticResource MutedLabel}"
+                           LineBreakMode="WordWrap" HorizontalTextAlignment="Center" FontSize="15" />
+                </Border>
+
+                <VerticalStackLayout IsVisible="{Binding HasData}" Spacing="0">
+                    <VerticalStackLayout Margin="0,14,0,0">
+                        <Label Text="{loc:T body_weight}" Style="{StaticResource Caps}" FontSize="12" />
+                        <HorizontalStackLayout Spacing="10">
+                            <Label Text="{Binding BigValue}" Style="{StaticResource Display}" />
+                            <HorizontalStackLayout Spacing="3" IsVisible="{Binding HasDelta}" VerticalOptions="End" Margin="0,0,0,8">
+                                <ctl:Icon Name="{Binding DeltaIcon}" Size="14" Thickness="2.6" IconColor="{DynamicResource Muted}" VerticalOptions="Center" />
+                                <Label Text="{Binding DeltaText}" TextColor="{DynamicResource Muted}" FontFamily="BarlowSemi" FontSize="14" VerticalOptions="Center" />
+                            </HorizontalStackLayout>
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+
+                    <ctl:ChartView x:Name="Chart" Margin="0,6,0,0" />
+
+                    <ctl:SegmentedControl Items="{loc:T seg_range}" SelectedIndex="{Binding RangeIndex, Mode=TwoWay}" AccentSelection="False" Margin="0,4,0,0" />
+
+                    <Label Text="{loc:T recent_entries}" Style="{StaticResource Caps}" Margin="0,18,0,4" />
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding Recent}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="vm:BodyRow">
+                                <Grid ColumnDefinitions="*,Auto" HeightRequest="48">
+                                    <Label Text="{Binding Date}" TextColor="{DynamicResource Muted}" VerticalOptions="Center" />
+                                    <Label Grid.Column="1" Text="{Binding Value}" FontFamily="BarlowSemi" VerticalOptions="Center" />
+                                    <BoxView Grid.ColumnSpan="2" HeightRequest="1" VerticalOptions="End" Color="{DynamicResource Line}" />
+                                </Grid>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <ctl:BottomTabs Grid.Row="1" Active="2" />
+    </Grid>
+</ContentPage>
