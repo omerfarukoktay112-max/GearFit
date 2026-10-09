@@ -29,8 +29,6 @@ dotnet build -f net10.0-windows10.0.19041.0 # Windows
 
 Or open `GearFit.csproj` in Visual Studio 2026 and pick *Android Emulator* or *Windows Machine*.
 
-> **Note:** Android builds fail (`APT2265`) if the project path contains non-ASCII characters. Keep the folder in a plain ASCII path such as `C:\Projects\GearFit`.
-
 Publish a standalone Windows build:
 
 ```powershell
